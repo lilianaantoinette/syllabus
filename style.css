@@ -537,6 +537,12 @@ footer {
   width: 16px;
   height: 16px;
 }
+.chatbot-message {
+    transition: opacity 0.3s ease;
+}
+.typing-indicator {
+    min-height: 40px; /* Prevent height jumps */
+}
 
 /* ====== RESPONSIVE DESIGN ====== */
 @media (max-width: 768px) {
