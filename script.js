@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', function() {
 // Enhanced Custom Cursor
 const cursor = document.querySelector('.cursor');
 
@@ -395,5 +396,6 @@ chatbotSend.addEventListener('click', sendMessage);
 chatbotInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         sendMessage();
-    }
+        }
+    });
 });
