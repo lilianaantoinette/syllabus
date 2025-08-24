@@ -3,72 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENGL 1+28 | Academic Reading and Writing</title>
+    <title>ENGL 100B - Composition II</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="cursor"></div>
+    <div class="cursor">📚</div>
     
+    <!-- Enhanced Navigation -->
     <nav class="syllabus-nav">
-        <div class="nav-logo">ENGL 1+28</div>
-        <div class="nav-links">
-            <a href="#description">Description</a>
-            <a href="#structure">Structure</a>
-            <a href="#grading">Grading</a>
-            <a href="#policies">Policies</a>
-            <a href="#resources">Resources</a>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-book-open"></i>
+                <span>ENGL 100B-05</span>
+            </div>
+            
+            <div class="nav-links">
+                <a href="#description">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Description</span>
+                </a>
+                <a href="#structure">
+                    <i class="fas fa-book"></i>
+                    <span>Structure</span>
+                </a>
+                <a href="#grading">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Grading</span>
+                </a>
+                <a href="#policies">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Policies</span>
+                </a>
+                <a href="#resources">
+                    <i class="fas fa-tools"></i>
+                    <span>Resources</span>
+                </a>
+            </div>
+            
+            <div class="nav-actions">
+                <button class="nav-action-btn" id="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="nav-action-btn" id="search-toggle">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Search Bar -->
+        <div class="nav-search" id="nav-search">
+            <form id="search-form">
+                <input type="text" placeholder="Search syllabus..." id="search-input">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+            <div class="search-results" id="search-results"></div>
         </div>
     </nav>
     
     <div class="syllabus-container">
+        <!-- Hero Section -->
         <section class="hero">
-            <h1>ENGL 1 | Academic Reading and Writing</h1>
-            <p class="hero-subtitle">ENGL 28 | Intensive College Writing Skills</p>
+            <div class="hero-content">
+                <h1>ENGL 100B - Composition II</h1>
+                <div class="course-meta">
+                    <div class="meta-item">
+                        Term
+                        <span>Fall 2025</span>
+                    </div>
+                    <div class="meta-item">
+                        Course No.
+                        <span>1395 Section 05</span>
+                    </div>
+                    <div class="meta-item">
+                        Meeting Time
+                        <span>MWF 9:00-9:50 AM</span>
+                    </div>
+                    <div class="meta-item">
+                        Location
+                        <span>LA2-100</span>
+                    </div>
+                    <div class="meta-item">
+                        Instructor
+                        <span>Liliana De Simone</span>
+                    </div>
+                    <div class="meta-item">
+                        Office Hours
+                        <span>MW 10:00–11:00 AM</span>
+                    </div>
+                    <div class="meta-item">
+                        Office Location
+                        <span>MHB510</span>
+                    </div>
+                    <div class="meta-item">
+                        Contact
+                        <span>liliana.desimone@csulb.edu</span>
+                    </div>
+                </div>
+            </div>
             
-            <div class="course-meta">
-                <div class="meta-item">
-                    Term
-                    <span>Fall 2025</span>
+            <!-- Enhanced Quote Carousel -->
+            <div class="quote-carousel-container">
+                <div class="quote-carousel">
+                    <div class="book-corner"></div>
+                    <div class="page-edge"></div>
+                    <div class="quote">
+                        <p class="quote-text">"The most valuable of all talents is that of never using two words when one will do."</p>
+                        <span class="quote-author">- Thomas Jefferson</span>
+                    </div>
+                    <div class="quote">
+                        <p class="quote-text">"Writing is an exploration. You start from nothing and learn as you go."</p>
+                        <span class="quote-author">- E.L. Doctorow</span>
+                    </div>
+                    <div class="quote">
+                        <p class="quote-text">"If there's a book that you want to read, but it hasn't been written yet, then you must write it."</p>
+                        <span class="quote-author">- Toni Morrison</span>
+                    </div>
+                    <div class="quote">
+                        <p class="quote-text">"You can make anything by writing."</p>
+                        <span class="quote-author">- C.S. Lewis</span>
+                    </div>
+                    <div class="quote">
+                        <p class="quote-text">"A word after a word after a word is power."</p>
+                        <span class="quote-author">- Margaret Atwood</span>
+                    </div>
+                    <div class="quote">
+                        <p class="quote-text">"The role of a writer is not to say what we all can say, but what we are unable to say."</p>
+                        <span class="quote-author">- Anaïs Nin</span>
+                    </div>
+                    <div class="quote">
+                        <p class="quote-text">"Write what should not be forgotten."</p>
+                        <span class="quote-author">- Isabel Allende</span>
+                    </div>
                 </div>
-                <div class="meta-item">
-                    Format
-                    <span>Hybrid</span>
-                </div>
-                <div class="meta-item">
-                    Instructor
-                    <span>Liliana De Simone</span>
-                </div>
-                <div class="meta-item">
-                    Office Hours
-                    <span>Thursdays from 9AM to 11:15AM</span>
+                
+                <button class="carousel-nav carousel-prev">❮</button>
+                <button class="carousel-nav carousel-next">❯</button>
+                
+                <div class="carousel-controls">
+                    <button class="carousel-dot active"></button>
+                    <button class="carousel-dot"></button>
+                    <button class="carousel-dot"></button>
+                    <button class="carousel-dot"></button>
                 </div>
             </div>
         </section>
         
-        <div class="quick-nav">
-            <a href="#grading">Grading Breakdown</a>
-            <a href="#policies">Course Policies</a>
-            <a href="#resources">Student Resources</a>
-        </div>
-        
         <section class="section" id="description">
             <h2 class="section-title">Course Description</h2>
             <div class="card">
-                <h3>ENGL C1000: Academic Reading and Writing</h3>
-                <p>An introductory course in rhetoric that emphasizes clear, effective written communication and preparation of the research paper. Designed to help students improve reading and writing skills for college-level work through engaged, active approaches to texts.</p>
-                
-                <h3 style="margin-top: 2rem;">ENGL 28: Intensive College Writing Skills</h3>
-                <p>Emphasizes clear, effective written communication and preparation of the research paper to prepare students for success in college-level composition and reading. Consists of instruction in composition, comprehension and analysis of college-level readings, and basic research skills.</p>
+                <h3>ENGL 100B - Composition II</h3>
+                <p>Expository writing course designed for first-year students. Satisfies one of the writing requirements for general education at CSULB. Emphasizes academic discourse, focusing on analytical reading, thesis-driven writing, and rhetorical strategies. Letter grade only (A-F).</p>
+                <p><strong>Not open for students with credit in:</strong> ENGL 100B, ASAM 100B, AFRS 100B, CHLS 104B, AIS 104B. Traditional mode of instruction.</p>
                 
                 <div class="highlight-box">
                     <h3 style="margin-bottom: 1rem;">Student Learning Outcomes</h3>
                     <ul>
-                        <li>Read, comprehend, and analyze college-level writing</li>
-                        <li>Respond with thesis-driven analytical essays</li>
-                        <li>Write research papers using carefully evaluated sources</li>
-                        <li>Demonstrate critical thinking through peer review</li>
-                        <li>Develop pre-writing strategies and revision skills</li>
+                        <li>SLO 1: Compose work using multiple modalities appropriate for particular rhetorical situations. (GELO 3)</li>
+                        <li>SLO 2: Assess rhetorical purpose by demonstrating awareness of audience expectations, representing opposing viewpoints accurately and respectfully, and contextualizing claims. (GELOs 5, 6, 7)</li>
+                        <li>SLO 3: Develop an academic essay in response to a writing task, indicating a clear topic, focus, and purpose supported by evidence, relevant details, and effectively integrated source materials; apply correctly and understand the assumptions informing citation systems. (GELOs 1, 2, 3, 4)</li>
+                        <li>SLO 4: Recognize and make effective use of organizational patterns and transitional devices that serve both the writer's rhetorical purposes and the needs of the reading audience. (GELOs 2, 4)</li>
+                        <li>SLO 5: Demonstrate critical comprehension of college-level reading by grasping the significance of the topic, recognizing assumptions, and providing well-developed, informed analysis. (GELOs 6, 7)</li>
+                        <li>SLO 6: Demonstrate control of sentence structure, grammar, punctuation, spelling, and mechanics to enhance clarity and credibility; examine writing conventions as rhetorical decisions: negotiable and fluid across various genres and contexts. (GELO 4)</li>
                     </ul>
                 </div>
             </div>
@@ -77,22 +179,43 @@
         <section class="section" id="structure">
             <h2 class="section-title">Course Structure</h2>
             <div class="card">
-                <h3>Hybrid Format</h3>
-                <p>Each week follows the same basic pattern of activities: We meet in class once per week. The remainder of our course will be conducted online via Canvas and may involve:</p>
+                <h3>Required Texts</h3>
                 <ul>
-                    <li>Watching videos and completing reading assignments</li>
-                    <li>Annotating texts and completing short writing assignments</li>
-                    <li>Taking quizzes and participating in discussions</li>
-                    <li>Attending one-on-one conferences</li>
+                    <li>Lunsford, Andrea A. <em>Let's Talk with Readings</em>. Second edition., W. W. Norton & Company, 2025.</li>
+                    <li>Ball, Cheryl. and Drew Loewe. <em>Bad Ideas About Writing</em>. West Virginia University Libraries, 2017. <a href="https://textbooks.lib.wvu.edu/badideas/badideasaboutwriting-book.pdf" target="_blank">https://textbooks.lib.wvu.edu/badideas/badideasaboutwriting-book.pdf</a></li>
+                    <li>A composition notebook or similar for journal entries</li>
                 </ul>
+                <p>Additional course readings are posted on Canvas as links or PDF files. If you have any trouble finding or opening these documents, please let me know so that I can help you get access.</p>
                 
                 <h3 style="margin-top: 2rem;">Requirements</h3>
                 <ul>
-                    <li>All course texts will be Open Educational Resources posted on Canvas</li>
-                    <li>Reliable computer and internet access that meets technical requirements</li>
-                    <li>A notebook for class notes, in-class writing, brainstorming and essay planning</li>
-                    <li>Writing utensils for in-class activities</li>
+                    <li>All assignments must follow current MLA formatting</li>
+                    <li>Writing assignments must be uploaded as Word files (.docx) or Google Docs with version history enabled</li>
+                    <li>Submissions will be processed through Turnitin</li>
+                    <li>Reliable computer and internet access</li>
+                    <li>A composition notebook for handwritten journal entries</li>
                 </ul>
+                
+                <h3 style="margin-top: 2rem;">Assignments Overview</h3>
+                <div class="highlight-box">
+                    <h4>Rhetorical Response Journal (20%)</h4>
+                    <p>Series of ten low-stakes, handwritten journal entries designed to develop critical reading and writing skills through consistent practice and reflection. Graded on engagement and completion rather than correctness.</p>
+                    
+                    <h4>Position Paper (20%)</h4>
+                    <p>750-1000 word essay articulating and defending your vision of the university. Requires applying critical reading, rhetorical awareness, evidence integration, and revision skills. Drafting occurs in stages with version history enabled.</p>
+                    
+                    <h4>Conference Presentation (10%)</h4>
+                    <p>5-7 minute lecture based on your conference paper topic, using at least one visual aid. Followed by a brief reflection analyzing your presentation experience.</p>
+                    
+                    <h4>Conference Paper (25%)</h4>
+                    <p>1500-word capstone project synthesizing the skills developed throughout the semester. Developed from your conference presentation into a polished, persuasive academic paper with a complex thesis.</p>
+                    
+                    <h4>Quizzes (10%)</h4>
+                    <p>Weekly open-note (but not open-computer) quizzes to encourage consistent engagement with course material and check understanding. May be retaken to improve scores.</p>
+                    
+                    <h4>Participation and Attendance (15%)</h4>
+                    <p>Based on consistent presence and active engagement in this workshop-based course. Final grade determined by averaging self-evaluation with peer evaluations.</p>
+                </div>
             </div>
         </section>
         
@@ -101,48 +224,62 @@
             <div class="grid-2">
                 <div class="card">
                     <div class="grading-item">
-                        <div class="grading-percentage">30%</div>
-                        <h3>Participation</h3>
-                        <p>Includes reading annotations, discussion boards, in-class discussions, attendance, and in-class writing assignments.</p>
+                        <div class="grading-percentage">20%</div>
+                        <h3>Rhetorical Response Journal</h3>
+                        <p>Ten handwritten journal entries focused on critical reading and writing development.</p>
                     </div>
                 </div>
                 <div class="card">
                     <div class="grading-item">
-                        <div class="grading-percentage">60%</div>
-                        <h3>Essays</h3>
-                        <p>Includes identity essay, analytical argument essay, research proposal, and research paper with prewriting, rough draft, and peer review.</p>
+                        <div class="grading-percentage">20%</div>
+                        <h3>Position Paper</h3>
+                        <p>750-1000 word essay articulating your vision of the university.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="grading-item">
+                        <div class="grading-percentage">10%</div>
+                        <h3>Quizzes</h3>
+                        <p>Weekly quizzes to check understanding of course material.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="grading-item">
+                        <div class="grading-percentage">15%</div>
+                        <h3>Participation & Attendance</h3>
+                        <p>Based on engagement in workshop activities and consistent attendance.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="grading-item">
+                        <div class="grading-percentage">10%</div>
+                        <h3>Conference Presentation</h3>
+                        <p>5-7 minute presentation with visual aids based on research topic.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="grading-item">
+                        <div class="grading-percentage">25%</div>
+                        <h3>Conference Paper</h3>
+                        <p>1500-word capstone research paper developing presentation into academic essay.</p>
                     </div>
                 </div>
             </div>
             
             <div class="card" style="margin-top: 1.5rem;">
-                <h3>Detailed Grade Distribution</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-                    <ul>
-                        <li>Midterm: 5%</li>
-                        <li>Final: 5%</li>
-                        <li>Annotations: 7.5%</li>
-                        <li>Discussions: 7.5%</li>
-                    </ul>
-                    <ul>
-                        <li>Attendance: 7.5%</li>
-                        <li>In-Class Writing: 7.5%</li>
-                        <li>Research Proposal: 6%</li>
-                        <li>Identity Essay: 15%</li>
-                        <li>Analytical Argument: 18%</li>
-                    </ul>
+                <h3>Final Grade Scale</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; justify-content: center;">
+                    <span style="padding: 0.5rem 1rem; border-radius: 4px;">A 90-100%</span>
+                    <span style="padding: 0.5rem 1rem; border-radius: 4px;">B 80-89%</span>
+                    <span style="padding: 0.5rem 1rem; border-radius: 4px;">C 70-79%</span>
+                    <span style="padding: 0.5rem 1rem; border-radius: 4px;">D 60-69%</span>
+                    <span style="padding: 0.5rem 1rem; border-radius: 4px;">F Below 60%</span>
                 </div>
+                <p style="margin-top: 1rem; font-size: 0.9rem;"><em>Note: Final grades will not be rounded up.</em></p>
                 
                 <div class="highlight-box" style="margin-top: 1.5rem;">
-                    <h3>Final Grade Scale</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;">
-                        <span style="padding: 0.5rem 1rem; background: #e8f5e9; border-radius: 4px;">A: 90-100%</span>
-                        <span style="padding: 0.5rem 1rem; background: #e3f2fd; border-radius: 4px;">B: 80-89%</span>
-                        <span style="padding: 0.5rem 1rem; background: #fff8e1; border-radius: 4px;">C: 70-79%</span>
-                        <span style="padding: 0.5rem 1rem; background: #ffebee; border-radius: 4px;">D: 60-69%</span>
-                        <span style="padding: 0.5rem 1rem; background: #f5f5f5; border-radius: 4px;">F: Below 60%</span>
-                    </div>
-                    <p style="margin-top: 1rem; font-size: 0.9rem;"><em>Note: Grades will be rounded to the nearest whole number at semester's end.</em></p>
+                    <h3>Extra Credit Opportunity</h3>
+                    <p>Visit the University Writing Center with your graded Position Paper to receive 5% extra credit. Submit the visit summary along with your revised essay and a 300-word revision statement.</p>
                 </div>
             </div>
         </section>
@@ -152,19 +289,35 @@
             <div class="grid-2">
                 <div class="card">
                     <h3>Attendance</h3>
-                    <p>No penalty for first two absences. With your third absence, you will be dropped from the course. Three tardies or early departures equals one absence.</p>
+                    <p>More than three unexcused absences will lower your final grade. Excused absences require documentation for illness, family emergencies, religious reasons, jury duty, or university activities.</p>
+                    <p>Your three free absences are for circumstances like car trouble, minor illness, work conflicts, etc. I recommend saving them for later in the semester.</p>
                 </div>
                 <div class="card">
                     <h3>Late Work</h3>
-                    <p>Assignments are due at 11:59PM on the indicated date. Work submitted more than one week late will receive a 10% deduction. Dropboxes won't open more than one week in advance.</p>
+                    <p>Late submissions incur penalties: 
+                    <ul>
+                        <li>Less than 1 hour late: 5% deduction</li>
+                        <li>Less than 24 hours late: 10% deduction</li>
+                        <li>Less than one week late: 20% deduction</li>
+                        <li>More than one week late: maximum grade of 50%</li>
+                    </ul>
+                    If having technical difficulties, email your work to show it was completed on time, then submit to Canvas when able.</p>
+                </div>
+                <div class="card">
+                    <h3>"Life Happens" Extension</h3>
+                    <p>Once per semester, each student may use one 48-hour extension without explanation. Just email me to let me know you're using it. Cannot be used for the final conference paper.</p>
                 </div>
                 <div class="card">
                     <h3>Academic Integrity</h3>
-                    <p>Plagiarism in any form will not be tolerated. Any act of accidental plagiarism will result in an "F" for the assignment until corrected. Deliberate plagiarism will result in a zero.</p>
+                    <p>Plagiarism, self-plagiarism, or unauthorized AI use will result in a zero and possible course failure. Using GenAI tools to generate content is not allowed. All work is screened through Turnitin, and version history is required for non-handwritten assignments.</p>
                 </div>
                 <div class="card">
-                    <h3>Inclusivity</h3>
-                    <p>Our class respects all ethnicities, genders, religions, sexual orientations, disabilities, and backgrounds. Disrespectful behavior will not be tolerated.</p>
+                    <h3>Communication Policy</h3>
+                    <p>I respond to emails within 24 hours Monday-Friday (9-5). Weekend responses aren't guaranteed. Enable Canvas notifications for announcements. Office hours: MW 10-11am in MHB510.</p>
+                </div>
+                <div class="card">
+                    <h3>Classroom Conduct</h3>
+                    <p>Respectful discussion is expected. Avoid inflammatory language regarding gender, orientation, age, race, culture, or religion. Silence phones and avoid non-course related browsing. Disruptive behavior may result in being asked to leave, counting as an absence.</p>
                 </div>
             </div>
         </section>
@@ -175,44 +328,39 @@
                 <h3>Campus Resources</h3>
                 <div class="resource-list">
                     <div class="resource-item">
-                        <a href="https://www.smc.edu/student-support/academic-support/" target="_blank">Academic Resources</a>
+                        <a href="https://www.csulb.edu/student-affairs/bob-murphy-access-center" target="_blank">Bob Murphy Access Center (BMAC)</a>
+                        <p>For students with disabilities requiring accommodations. Register each semester and provide verification early.</p>
                     </div>
                     <div class="resource-item">
-                        <a href="https://www.smc.edu/student-support/academic-support/counseling/" target="_blank">Counseling</a>
+                        <a href="https://www.csulb.edu/student-affairs" target="_blank">Student Affairs</a>
                     </div>
                     <div class="resource-item">
-                        <a href="https://www.smc.edu/student-support/career-services/" target="_blank">Career Services</a>
+                        <a href="https://www.csulb.edu/health-services" target="_blank">Health Services</a>
                     </div>
                     <div class="resource-item">
-                        <a href="https://www.smc.edu/student-support/health-wellbeing/" target="_blank">Wellbeing</a>
+                        <a href="https://www.csulb.edu/counseling" target="_blank">Counseling</a>
                     </div>
                     <div class="resource-item">
-                        <a href="https://www.smc.edu/student-support/health-wellbeing/health-services/" target="_blank">Health Services</a>
+                        <a href="https://www.csulb.edu/library" target="_blank">University Library</a>
                     </div>
                     <div class="resource-item">
-                        <a href="https://www.smc.edu/student-support/health-wellbeing/basic-needs/food-security-programs.php" target="_blank">Food Programs</a>
-                    </div>
-                    <div class="resource-item">
-                        <a href="https://www.smc.edu/student-support/center-for-students-with-disabilities/" target="_blank">Disability Services</a>
-                    </div>
-                    <div class="resource-item">
-                        <a href="https://admin.smc.edu/administration/ombudsperson/general-complaint-process.php" target="_blank">Concerns</a>
+                        <a href="https://www.csulb.edu/writing-center" target="_blank">Writing Center</a>
+                        <p>Offers one-on-one writing support and extra credit opportunities.</p>
                     </div>
                 </div>
                 
                 <h3 style="margin-top: 2rem;">Technical Support</h3>
                 <div class="resource-list">
                     <div class="resource-item">
-                        <a href="https://community.canvaslms.com/t5/Student-Guide/tkb-p/student" target="_blank">Canvas Student Guide</a>
+                        <a href="https://csulb.teamdynamix.com/TDClient/1993/Portal/home/" target="_blank">Technology Help Desk</a>
+                        <p>For technical assistance or Canvas issues: (562) 985-4959 or helpdesk@csulb.edu</p>
                     </div>
                     <div class="resource-item">
-                        <a href="https://admin.smc.edu/administration/information-technology/academic-computing/student-it-help/" target="_blank">Student IT Help</a>
+                        <a href="https://www.csulb.edu/software-depot" target="_blank">Software Depot</a>
                     </div>
                     <div class="resource-item">
-                        <a href="https://community.canvaslms.com/t5/Canvas-Mobile/ct-p/canvas_mobile?tab=recent" target="_blank">Mobile Guides</a>
-                    </div>
-                    <div class="resource-item">
-                        <a href="https://community.canvaslms.com/t5/Canvas-Basics-Guide/What-are-the-browser-and-computer-requirements-for-Instructure/ta-p/66" target="_blank">Tech Requirements</a>
+                        <a href="https://www.csulb.edu/library/guide/computing.html" target="_blank">Computer Labs</a>
+                        <p>Open access labs: Horn Center (lower campus) and Spidell Technology Center (Library). Printing: 10 cents/page using Beach ID card.</p>
                     </div>
                 </div>
             </div>
@@ -220,7 +368,7 @@
         
         <footer>
             <p>This syllabus represents our best plans at this time, but things may change as we learn together.</p>
-            <p>Last updated: August 15, 2025</p>
+            <p>Last updated: August 25, 2025</p>
             <p style="margin-top: 1.5rem;"><em>Your continued attendance in this course constitutes an acknowledgement and acceptance of the requirements delineated in this syllabus.</em></p>
         </footer>
     </div>
@@ -228,14 +376,12 @@
     <!-- Chatbot Widget -->
     <div class="chatbot-widget">
         <button class="chatbot-toggle">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-            <span>Questions?</span>
+            <img src="https://uploads.onecompiler.io/43qq5fh8c/43ukf4p36/shakespeare-clipart-lg.png" alt="William Shakespeare" class="shakespeare-icon">
+            <span>Ask Questions</span>
         </button>
         <div class="chatbot-container">
             <div class="chatbot-header">
-                <h3>I'm just a robot! Sometimes I'm wrong.</h3>
+                <h3>Composition Questions?</h3>
                 <button class="chatbot-close">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -245,7 +391,7 @@
             </div>
             <div class="chatbot-messages">
                 <div class="chatbot-message chatbot-response">
-                    <p>Hello! I can answer questions about the ENGL 1+28 syllabus. Try asking about grading, attendance, or course policies.</p>
+                    <p>Welcome to ENGL 100B! Ask about assignments, policies, due dates, or anything else related to the course.</p>
                 </div>
             </div>
             <div class="chatbot-input">
