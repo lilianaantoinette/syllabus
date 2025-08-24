@@ -1,354 +1,582 @@
-// Enhanced Custom Cursor
-const cursor = document.querySelector('.cursor');
 
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-});
 
-// Cursor hover effects
-const interactiveElements = document.querySelectorAll(
-    'a, button, .resource-item, .card, .quick-nav a, .nav-links a, li'
-);
-
-interactiveElements.forEach(el => {
-    el.addEventListener('mouseenter', () => {
-        cursor.classList.add('cursor-active');
-        el.style.transform = 'translateY(-2px)';
+// Enhanced Navigation Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const nav = document.querySelector('.syllabus-nav');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const searchToggle = document.getElementById('search-toggle');
+    const navSearch = document.getElementById('nav-search');
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('i');
+    
+    // Scroll effect
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
     });
     
-    el.addEventListener('mouseleave', () => {
-        cursor.classList.remove('cursor-active');
-        el.style.transform = 'translateY(0)';
+    // Mobile menu toggle
+    mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        
+        // Close search if open
+        if (navSearch.classList.contains('active')) {
+            navSearch.classList.remove('active');
+            searchResults.classList.remove('active');
+        }
     });
-});
-
-// Scroll effects
-window.addEventListener('scroll', () => {
-    const nav = document.querySelector('.syllabus-nav');
-    if (window.scrollY > 50) {
-        nav.classList.add('syllabus-nav-scrolled');
-    } else {
-        nav.classList.remove('syllabus-nav-scrolled');
+    
+    // Search toggle
+    searchToggle.addEventListener('click', () => {
+        navSearch.classList.toggle('active');
+        
+        // Close mobile menu if open
+        if (navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            mobileMenuToggle.classList.remove('active');
+        }
+        
+        // Focus on input when search is opened
+        if (navSearch.classList.contains('active')) {
+            setTimeout(() => {
+                searchInput.focus();
+            }, 300);
+        } else {
+            searchResults.classList.remove('active');
+        }
+    });
+    
+    // Theme toggle
+    themeToggle.addEventListener('click', () => {
+        const isDarkMode = document.body.getAttribute('data-theme') === 'dark';
+        if (isDarkMode) {
+            document.body.removeAttribute('data-theme');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
+    
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
     }
-});
-
-// Smooth scrolling
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        window.scrollTo({
-            top: target.offsetTop - 80,
-            behavior: 'smooth'
+    
+    // Close mobile menu when clicking on a link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            mobileMenuToggle.classList.remove('active');
         });
     });
-});
-
-// Animate elements on scroll
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate-in');
+    
+    // Close search when clicking outside
+    document.addEventListener('click', (e) => {
+        if (navSearch.classList.contains('active') && 
+            !e.target.closest('#nav-search') && 
+            !e.target.closest('#search-toggle')) {
+            navSearch.classList.remove('active');
+            searchResults.classList.remove('active');
         }
     });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.card, .section-title').forEach(el => {
-    observer.observe(el);
+    
+    // Search functionality
+    searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        performSearch(searchInput.value.trim());
+    });
+    
+    searchInput.addEventListener('input', () => {
+        if (searchInput.value.trim() === '') {
+            searchResults.classList.remove('active');
+        } else {
+            performSearch(searchInput.value.trim());
+        }
+    });
+    
+    function performSearch(query) {
+        if (query === '') {
+            searchResults.classList.remove('active');
+            return;
+        }
+        
+        // Simple search implementation
+        const content = document.body.textContent.toLowerCase();
+        const searchTerms = query.toLowerCase().split(' ');
+        
+        // Find sections that contain the search terms
+        const sections = document.querySelectorAll('.section, .card, .highlight-box');
+        const results = [];
+        
+        sections.forEach(section => {
+            const sectionText = section.textContent.toLowerCase();
+            let matchCount = 0;
+            
+            searchTerms.forEach(term => {
+                if (sectionText.includes(term)) {
+                    matchCount++;
+                }
+            });
+            
+            if (matchCount > 0) {
+                // Get the section title or heading
+                const heading = section.querySelector('h2, h3') || 
+                               section.closest('.section')?.querySelector('h2');
+                const headingText = heading ? heading.textContent : 'Content';
+                
+                // Get a snippet of text around the first match
+                const firstMatchIndex = sectionText.indexOf(searchTerms[0]);
+                const start = Math.max(0, firstMatchIndex - 50);
+                const end = Math.min(sectionText.length, firstMatchIndex + 100);
+                let snippet = sectionText.substring(start, end);
+                
+                // Highlight the search terms in the snippet
+                searchTerms.forEach(term => {
+                    const regex = new RegExp(term, 'gi');
+                    snippet = snippet.replace(regex, '<mark>$&</mark>');
+                });
+                
+                results.push({
+                    heading: headingText,
+                    snippet: snippet,
+                    element: section
+                });
+            }
+        });
+        
+        // Display results
+        displaySearchResults(results, query);
+    }
+    
+    function displaySearchResults(results, query) {
+        searchResults.innerHTML = '';
+        
+        if (results.length === 0) {
+            searchResults.innerHTML = `<div class="result-item"><p>No results found for "${query}"</p></div>`;
+        } else {
+            results.forEach(result => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `
+                    <h4>${result.heading}</h4>
+                    <p>${result.snippet}...</p>
+                `;
+                
+                resultItem.addEventListener('click', () => {
+                    result.element.scrollIntoView({ behavior: 'smooth' });
+                    navSearch.classList.remove('active');
+                    searchResults.classList.remove('active');
+                    searchInput.value = '';
+                });
+                
+                searchResults.appendChild(resultItem);
+            });
+        }
+        
+        searchResults.classList.add('active');
+    }
+    
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const target = document.querySelector(targetId);
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Initialize quote carousel
+    initQuoteCarousel();
+    
+    // Initialize chatbot functionality
+    initChatbot();
+    
+    // Initialize custom cursor
+    const cursor = document.querySelector('.cursor');
+    
+    // Show custom cursor and hide default one
+    cursor.style.display = 'block';
+    
+    document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+    
+    // Animate elements on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    document.querySelectorAll('.card, .section-title').forEach(el => {
+        observer.observe(el);
+    });
 });
 
+// Enhanced Quote Carousel Functionality
+function initQuoteCarousel() {
+    const quotes = document.querySelectorAll('.quote');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const prevBtn = document.querySelector('.carousel-prev');
+    const nextBtn = document.querySelector('.carousel-next');
+    const carousel = document.querySelector('.quote-carousel');
+    
+    // Check if elements exist
+    if (!quotes.length || !dots.length) {
+        console.error('Carousel elements not found');
+        return;
+    }
+    
+    let currentQuote = 0;
+    let autoPlayInterval;
+    
+    // Function to show a specific quote
+    function showQuote(index) {
+        // Hide all quotes
+        quotes.forEach(quote => {
+            quote.style.display = 'none';
+        });
+        
+        // Remove active class from all dots
+        dots.forEach(dot => {
+            dot.classList.remove('active');
+        });
+        
+        // Show the selected quote and update active dot
+        quotes[index].style.display = 'block';
+        dots[index].classList.add('active');
+        
+        // Update current quote index
+        currentQuote = index;
+        
+        // Add subtle animation to carousel
+        carousel.style.animation = 'none';
+        setTimeout(() => {
+            carousel.style.animation = 'pulse 1s ease';
+        }, 10);
+    }
+    
+    // Next quote function
+    function nextQuote() {
+        let nextIndex = (currentQuote + 1) % quotes.length;
+        showQuote(nextIndex);
+    }
+    
+    // Previous quote function
+    function prevQuote() {
+        let prevIndex = (currentQuote - 1 + quotes.length) % quotes.length;
+        showQuote(prevIndex);
+    }
+    
+    // Set up auto-play
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(nextQuote, 7000);
+    }
+    
+    // Stop auto-play
+    function stopAutoPlay() {
+        clearInterval(autoPlayInterval);
+    }
+    
+    // Event listeners for navigation
+    if (nextBtn && prevBtn) {
+        nextBtn.addEventListener('click', () => {
+            stopAutoPlay();
+            nextQuote();
+            startAutoPlay();
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            stopAutoPlay();
+            prevQuote();
+            startAutoPlay();
+        });
+    }
+    
+    // Event listeners for dots
+    if (dots.length > 0) {
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                stopAutoPlay();
+                showQuote(index);
+                startAutoPlay();
+            });
+        });
+    }
+    
+    // Pause auto-play when hovering over carousel
+    if (carousel) {
+        carousel.addEventListener('mouseenter', stopAutoPlay);
+        carousel.addEventListener('mouseleave', startAutoPlay);
+    }
+    
+    // Show the first quote immediately
+    showQuote(0);
+    
+    // Initialize auto-play
+    startAutoPlay();
+}
+
 // Chatbot functionality
-const chatbotWidget = document.querySelector('.chatbot-widget');
-const chatbotToggle = document.querySelector('.chatbot-toggle');
-const chatbotClose = document.querySelector('.chatbot-close');
-const chatbotMessages = document.querySelector('.chatbot-messages');
-const chatbotInput = document.querySelector('.chatbot-text-input');
-const chatbotSend = document.querySelector('.chatbot-send');
-
-// Create typing indicator element
-function createTypingIndicator() {
-    const typingDiv = document.createElement('div');
-    typingDiv.classList.add('chatbot-message', 'chatbot-response', 'typing-indicator');
+function initChatbot() {
+    const chatbotWidget = document.querySelector('.chatbot-widget');
+    const chatbotToggle = document.querySelector('.chatbot-toggle');
+    const chatbotClose = document.querySelector('.chatbot-close');
+    const chatbotMessages = document.querySelector('.chatbot-messages');
+    const chatbotInput = document.querySelector('.chatbot-text-input');
+    const chatbotSend = document.querySelector('.chatbot-send');
     
-    const dotContainer = document.createElement('div');
-    dotContainer.classList.add('typing-dots');
-    
-    for (let i = 0; i < 3; i++) {
-        const dot = document.createElement('span');
-        dotContainer.appendChild(dot);
+    // Create typing indicator element
+    function createTypingIndicator() {
+        const typingDiv = document.createElement('div');
+        typingDiv.classList.add('chatbot-message', 'chatbot-response', 'typing-indicator');
+        
+        const dotContainer = document.createElement('div');
+        dotContainer.classList.add('typing-dots');
+        
+        for (let i = 0; i < 3; i++) {
+            const dot = document.createElement('span');
+            dotContainer.appendChild(dot);
+        }
+        
+        typingDiv.appendChild(dotContainer);
+        return typingDiv;
     }
     
-    typingDiv.appendChild(dotContainer);
-    return typingDiv;
-}
-
-// Remove typing indicator
-function removeTypingIndicator(indicator) {
-    if (indicator && indicator.parentNode) {
-        indicator.remove();
-    }
-}
-
-// Simulate typing effect
-function typeMessage(message, element, callback) {
-    let i = 0;
-    const typingSpeed = 10 + Math.random() * 15;
-    
-    function type() {
-        if (i < message.length) {
-            element.textContent += message.charAt(i);
-            i++;
-            setTimeout(type, typingSpeed);
-            
-            // Scroll to bottom as we type
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        } else if (callback) {
-            callback();
+    // Remove typing indicator
+    function removeTypingIndicator(indicator) {
+        if (indicator && indicator.parentNode) {
+            indicator.remove();
         }
     }
     
-    type();
-}
-
-// Add message to chat
-function addMessage(text, isQuestion = false, isInitialGreeting = false) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('chatbot-message');
-    messageDiv.classList.add(isQuestion ? 'chatbot-question' : 'chatbot-response');
+    // Simulate typing effect
+    function typeMessage(message, element, callback) {
+        let i = 0;
+        const typingSpeed = 10 + Math.random() * 15;
+        
+        function type() {
+            if (i < message.length) {
+                element.textContent += message.charAt(i);
+                i++;
+                setTimeout(type, typingSpeed);
+                
+                // Scroll to bottom as we type
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            } else if (callback) {
+                callback();
+            }
+        }
+        
+        type();
+    }
     
-    const messageText = document.createElement('p');
-    messageDiv.appendChild(messageText);
-    
-    if (isQuestion) {
-        // For questions, show immediately
-        messageText.textContent = text;
-        chatbotMessages.appendChild(messageDiv);
-    } else if (isInitialGreeting) {
-        // For initial greeting
-        messageText.textContent = text;
-        chatbotMessages.appendChild(messageDiv);
-    } else {
-        // For normal responses
-        const typingIndicator = createTypingIndicator();
-        chatbotMessages.appendChild(typingIndicator);
+    // Add message to chat
+    function addMessage(text, isQuestion = false, isInitialGreeting = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('chatbot-message');
+        messageDiv.classList.add(isQuestion ? 'chatbot-question' : 'chatbot-response');
+        
+        const messageText = document.createElement('p');
+        messageDiv.appendChild(messageText);
+        
+        if (isQuestion) {
+            // For questions, show immediately
+            messageText.textContent = text;
+            chatbotMessages.appendChild(messageDiv);
+        } else if (isInitialGreeting) {
+            // For initial greeting
+            messageText.textContent = text;
+            chatbotMessages.appendChild(messageDiv);
+        } else {
+            // For normal responses
+            const typingIndicator = createTypingIndicator();
+            chatbotMessages.appendChild(typingIndicator);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            
+            setTimeout(() => {
+                // Replace typing indicator with actual message
+                typingIndicator.replaceWith(messageDiv);
+                typeMessage(text, messageText);
+            }, 500 + Math.random() * 500);
+        }
+        
         chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        
-        setTimeout(() => {
-            // Replace typing indicator with actual message
-            typingIndicator.replaceWith(messageDiv);
-            typeMessage(text, messageText);
-        }, 500 + Math.random() * 500);
     }
     
-    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-}
-
-// Handle sending messages
-function sendMessage() {
-    const message = chatbotInput.value.trim();
-    if (message) {
-        addMessage(message, true);
-        chatbotInput.value = '';
-        
-        // Get response after a short delay
-        setTimeout(() => {
-            const response = getChatbotResponse(message);
-            addMessage(response);
-        }, 500);
+    // Handle sending messages
+    function sendMessage() {
+        const message = chatbotInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            chatbotInput.value = '';
+            
+            // Get response after a short delay
+            setTimeout(() => {
+                const response = getChatbotResponse(message);
+                addMessage(response);
+            }, 500);
+        }
     }
-}
-
-function getChatbotResponse(question) {
+    
+    function getChatbotResponse(question) {
     const lowerQuestion = question.toLowerCase().trim();
     
     // EXTENSION REQUESTS
-    if (/(how|can|what).*(request|get|ask for|apply for).*extension|need more time.*assignment|(extension|late).*policy|(can't|won't).*make.*deadline|(miss|late).*due date/i.test(lowerQuestion)) {
-        return "To request an extension, you should email your instructor as soon as you know you won't be able to get the assignment in on time. In the subject line, write 'Extension Request.' If you're using your 'Life Happens' 48-hour extension, you don't need to include an explanation. If you've already used your 'Life Happens' extension or you need an extension for one of the assignments it doesn't cover, then you should explain your situation: how much extra time do you need and why?";
+    if (/(how|can|what).*(request|get|ask for|apply for).*extension|need more time.*assignment|(extension|late).*policy|(can't|won't).*make.*deadline|(miss|late).*due date|life happens extension/i.test(lowerQuestion)) {
+        return "You have one 48-hour 'Life Happens' extension available per semester. Just email me to let me know you'd like to use it—no explanation needed. This extension cannot be used for the final essay or in-class assignments/exams. Regular late work penalties: <1 hour (5%), 1 class day (10%), 2 class days (20%), >1 week (max 50%).";
     }
-    if (/(what('s| is)|explain|tell me about) an? extension|how.*extension.*work|what.*extension.*mean|(don't|do not) understand.*extension|define.*extension|how.*late.*work/i.test(lowerQuestion)) {
-        return "An extension is when you get official permission to turn in an assignment after the original due date. Here's what you should know:<br><br>" +
-               "• You need to request your extension within 24 hours of the original deadline<br>" +
-               "• Explain briefly why you need more time<br>" +
-               "• Specify how much time you're requesting<br>" +
-               "• Extensions aren't automatic - approval depends on your situation<br>" +
-               "It's best to ask early if you see trouble coming! It's better to request an extension than just turn work in late.";
-    }
-
+    
     // COURSE BASICS
-    if (/what('s| is).*(class|course|freshman comp|engl\s?[128]|writing class)|(can you|could you).*(tell me|explain).*(about|this).*class|what.*we.*do.*in.*class|describe.*(course|class)|overview.*of.*class|what.*cover.*in.*this.*class|what.*learn.*in.*(this|the).*class|what's.*the.*point.*of.*this.*class|why.*take.*this.*class/i.test(lowerQuestion)) {
-        return "In this class, you'll sharpen your academic reading and writing skills and discover how language shapes how we understand and connect with the world around us. This hybrid course invites you to bring your own voice, experiences, and ideas to the table. Becoming a confident communicator starts with believing that what you have to say matters.";
+    if (/what('s| is).*(class|course|engl\s?380|english studies)|(can you|could you).*(tell me|explain).*(about|this).*class|what.*we.*do.*in.*class|describe.*(course|class)|overview.*of.*class|what.*cover.*in.*this.*class|what.*learn.*in.*(this|the).*class|what's.*the.*point.*of.*this.*class|why.*take.*this.*class/i.test(lowerQuestion)) {
+        return "ENGL 380 is an advanced course covering research methods; approaches to literary, rhetorical, and pedagogical topics; critical and literary terminology; genre; and advanced skills in writing and analysis. You'll develop close-reading skills and learn to analyze various texts in cultural and historical contexts. Prerequisite: English 184 or equivalent.";
     }
+    
     if (/(what|what's|what will|how).*(learn|gain|get from|take away from).*(class|course)|(skills|outcomes|abilities).*(from|in).*class|why.*take.*this.*class|what's.*the.*point.*of.*this.*class|how.*this.*class.*help.*me|what.*teach.*in.*this.*class|what.*get.*out.*of.*class|how.*improve.*(writing|reading).*in.*this.*class/i.test(lowerQuestion)) {
-        return "In this class, you'll learn how to read critically, write clearly, and think deeply. You'll practice crafting strong thesis-driven essays, analyzing complex texts, and conducting meaningful research. You'll develop your unique voice as a writer and gain tools to express your ideas with confidence, clarity, and purpose.";
-    }
-    if (/what.*hybrid/i.test(lowerQuestion)) {
-        return "A hybrid class is a course that combines in-person classes with online learning.";
-    }
-    if (/(what('s| is)|define|explain|describe|tell me about).*(hybrid|mixed mode|blended).*(class|course)|how.*hybrid.*work|what.*mean.*hybrid|(hybrid|blended).*(mean|work)|(online|in-person).*and.*(in-person|online).*class|(both|combination).*(online|in-person)|(part|half).*(online|in-person)/i.test(lowerQuestion)) {
-        return "This class moves much faster than high school English. You'll write longer papers (up to 8 pages), do real research with academic sources, and cite everything correctly. The readings are more challenging, and you're expected to analyze instead of just summarize. You'll spend 6-9 hours weekly outside class.";
-    }
-    if (/(how much|how many).*(reading|writing|pages|work)|(what|how).*(workload|time commitment|weekly work)|(how many|how much).*hours.*per week|(reading|writing).*requirements|(how|what).*much.*homework|(how|what).*many.*assignments|(what|how).*long.*papers|(how|what).*often.*write|(how|what).*many.*essays/i.test(lowerQuestion)) {
-        return "You'll write three major papers and an in-class midterm essay exam. Each week, you can expect to spend ** hours outside of class reading and writing.";
-    }
-    if (/(what's|what is|tell me about).*(hardest|most difficult|biggest challenge|toughest part|most challenging)|(struggle|difficult|challenge|hard time).*in.*class|which.*part.*hardest|what.*should.*prepare.*for|what.*most.*students.*struggle|where.*people.*have.*trouble|what.*need.*most.*help|what.*biggest.*hurdle|what.*give.*most.*trouble/i.test(lowerQuestion)) {
-        return "Most students struggle with the research paper - not the writing itself, but managing the timeline. Start early! The students who do well are the ones who come to office hours with drafts before the due date panic sets in.";
-    }
-    if (/(what|what kind|what types|tell me about|describe).*(assignments|work|papers|essays|projects|homework|workload)|(will|do) we (have|do).*(papers|essays|writing)|how many.*(papers|essays|assignments)|what.*writing.*required|what.*major.*projects|(assignments|work).*in.*class|course.*requirements|(what|how).*often.*write/i.test(lowerQuestion)) {
-        return "We'll do: 1) A personal identity essay (4-5 pgs), 2) An analytical paper (5-6 pgs), 3) A research proposal (2-3 pgs), and 4) A big research paper (7-8 pgs). Plus weekly discussion posts, reading annotations, and peer reviews. No busywork - everything builds toward those major papers.";
-    }
-    if (/(where|what|which).*(classroom|room|meet|location|building|hss203|class|lecture).*(located|at|is)|how.*find.*(classroom|room|hss203)|where.*we.*meet|directions.*to.*class|location.*of.*(class|lecture)|(class|lecture).*address|(where|what).*is.*hss203/i.test(lowerQuestion)) {
-        return "We meet in Room HSS203.";
+        return "In this class, you'll learn to: demonstrate advanced writing processes; develop persuasive arguments through close reading; distinguish between literary genres; place literature in socio-historical contexts; use literary terminology; analyze rhetorical strategies in criticism; locate and evaluate scholarship; draw connections between texts; and show awareness of different pedagogical methods.";
     }
     
     // SCHEDULE & ATTENDANCE
-    if (/(when|what time|where|what days).*(class|meet|lecture|session).*(schedule|time|location|room|hss203)|(class|lecture).*(schedule|time|meet|location)|(day|time).*of.*class|(hybrid|in-person).*schedule|when.*we.*meet|what.*are.*class.*hours|(where|when).*is.*(class|lecture)|how.*often.*we.*meet/i.test(lowerQuestion)) {
-        return "Our class meets in person on Tuesdays from 11:15-1:35 in Room HSS203. This is a hybrid (part in-person and part online) class, so you'll also need to set aside 2.5 hours each week for online learning.";
+    if (/(when|what time|where|what days).*(class|meet|lecture|session).*(schedule|time|location|room|as243)|(class|lecture).*(schedule|time|meet|location)|(day|time).*of.*class|when.*we.*meet|what.*are.*class.*hours|(where|when).*is.*(class|lecture)|how.*often.*we.*meet/i.test(lowerQuestion)) {
+        return "Our class meets in person on Mondays and Wednesdays from 2:00–3:50 PM in Room AS243.";
     }
+    
     if (/(attendance|absent|miss|late|tardy).*(policy|rule|requirement|grade|count|drop)|how many.*(absences|misses|lates).*allowed|what happens if.*(miss|absent|late)|(can|what if) I.*(miss|skip).*class|(number|amount) of.*(absences|misses)|(consequences|penalty).*for.*(missing|absence)|(will|does).*(missing|absence).*(affect|drop).*grade|show up.*required/i.test(lowerQuestion)) {
-        return "You can miss two classes before your attendance grade starts to drop. If you miss a third class, you may be dropped from the course. Three tardies (more than ten minutes late) is equal to one absence. If you're more than thirty minutes late, you'll be marked absent.";
-    }
-    if (/(major|important|big|key).*(due dates|deadlines|assignments|papers|projects)|when.*(due|submit).*(essays|papers|assignments)|(what|which).*assignments.*due|(mark|write down).*dates|(upcoming|future).*deadlines|(assignment|paper).*schedule|(what|when).*are.*(midterm|final)|(research|analytical|identity).*due date|(course|class).*timeline|(what|when).*big.*projects/i.test(lowerQuestion)) {
-        return "Mark these in your calendar now:\n" +
-               "• Identity Essay - Week 3\n" +
-               "• Analytical Paper - Week 6\n" +
-               "• Midterm - Week 8\n" +
-               "• Research Proposal - Week 10\n" +
-               "• Research Paper - Week 14\n" +
-               "• Final Portfolio - Finals Week\n\n" +
-               "All assignments due Sundays at 11:59pm except the midterm (in-class). Don't wait until the last minute - these come up fast!";
+        return "More than two unexcused absences will lower your final grade. More than six unexcused absences will result in a 0 for attendance/participation. Excused absences require documentation for illness, family emergencies, religious reasons, jury duty, or university activities. Your two free absences are for circumstances like car trouble, minor illness, work conflicts, etc.";
     }
     
     // MATERIALS
-    if (/(do|have to|need to|must|should|are we).*(buy|purchase|get|bring|need).*(textbook|book|materials|readings)|(is|are).*textbook.*(required|needed)|(what|which).*books.*(need|required)|(how much|cost).*textbook|(free|OER|open educational).*resources|(where|how).*get.*textbook|(do we|can I).*use.*(ebook|pdf)|(required|course).*materials/i.test(lowerQuestion)) {
-        return "You don't need to buy a textbook! All our readings are free Open Educational Resources available as PDFs on Canvas. Just bring your laptop/tablet or print them if you prefer paper.";
+    if (/(do|have to|need to|must|should|are we).*(buy|purchase|get|bring|need).*(textbook|book|materials|readings)|(is|are).*textbook.*(required|needed)|(what|which).*books.*(need|required)|(how much|cost).*textbook|(where|how).*get.*textbook|(do we|can I).*use.*(ebook|pdf)|(required|course).*materials/i.test(lowerQuestion)) {
+        return "Required texts: 1) Garrett-Petts' 'Writing about Literature' (2nd ed.), 2) Shakespeare's 'Hamlet' (Norton Critical Edition, 2nd ed.), 3) Shelley's 'Frankenstein' (Broadview Press, 3rd ed.), and 4) Stevens' 'Literary Theory and Criticism' (2nd ed.). All must be the specified editions. Additional readings are posted on Canvas.";
     }
     
-    // TECHNOLOGY
-    if (/(what if|what happens if|help|what do i do if).*(computer|tech|laptop|device|internet).*(crashes|breaks|fails|problems|issues|dies)|(lost|delete|corrupt).*(work|file|document|assignment)|(backup|save|recover).*(work|assignment|file)|tech.*emergency|(computer|tech).*(trouble|problem|issue)|(submit|turn in).*(late|after).*(tech|computer)|(power|internet).*outage/i.test(lowerQuestion)) {
-        return "Save constantly and use Google Docs as backup! If tech issues happen, email me immediately with details.";
-    }
-
-    if (/group chat|discord|class chat/i.test(lowerQuestion)) {
-        return "There's no official class group chat, but you're welcome to organize a Discord server or study groups. Just remember: anything you submit must be your own work, even if you discussed it with classmates first.";
-    }
-    
-    // OFFICE HOURS
-    if (/(what('s| are)|explain|describe|tell me about|when are|how do).*(office hours|professor('s)? availability|meet with professor|ask questions outside class|get help outside class)|(can I|how to).*(meet|talk to|see).*(professor|instructor)|(where|when).*to.*get.*help|(extra|additional).*help.*times|(one-on-one|individual).*meetings/i.test(lowerQuestion)) {
-        return "Office hours are dedicated times outside of class when professors are available to meet with students to discuss course material, ask questions, and get feedback on assignments.";
-    }
-    if (/(when|what time|what days|how often|how long|where).*(office hours|professor('s)? availability|meet with professor)|(can I|how to).*(meet|talk to|see).*(professor|instructor).*(outside class)|(schedule|set up|make).*appointment|(available|free).*to talk|(extra|additional).*help.*times|(one-on-one|individual).*meetings|(virtual|in-person).*office hours/i.test(lowerQuestion)) {
-        return "Office hours take place online on Thursdays from 9:00 AM to 11:15 AM. If you need to meet in person or cannot make it during regular office hours, please send your professor an email to set up an appointment.";
-    }
-    if (/how.*(contact|reach|email|talk to|message|get in touch with).*(professor|teacher|instructor)|(professor|teacher|instructor).*(contact info|email|how to reach)|where.*office hours|when.*office hours|best way.*ask.*question/i.test(lowerQuestion)) {
-        return "The best way to reach your professor is by email: desimone_liliana@smc.edu. For detailed questions, visit during office hours.";
-    }
-
     // ASSIGNMENTS
-    if (/how many.*essays|writing assignments/i.test(lowerQuestion)) {
-        return "You'll write four major essays this semester: an Identity Essay, an Analytical Argument, a Midterm Essay, and a final Research Paper.";
+    if (/close reading paper|close reading|first paper|short paper/i.test(lowerQuestion)) {
+        return "The Close Reading Paper is a 1250-1500 word analytical essay focusing on a single primary text. You'll advance an arguable thesis supported by textual evidence. It's worth 20% of your grade. You may revise and resubmit it after final grades are posted with a 300-word revision statement.";
     }
-    if (/research paper|final paper|final research essay|final essay|last essay\research essay/i.test(lowerQuestion)) {
-        return "The research paper is a significant 7-8 page project where you'll investigate a topic of your choice (within course themes) using academic sources. We'll break the process into manageable steps throughout the semester.";
+    
+    if (/annotated bibliography|bibliography/i.test(lowerQuestion)) {
+        return "The Annotated Bibliography requires at least six credible academic sources relevant to your final paper. For each source, provide a correct MLA citation and an annotation summarizing its argument, evaluating methodology, and reflecting on its utility for your research. It's worth 10% of your grade.";
     }
-    if (/final|final exam/i.test(lowerQuestion)) {
-        return "The final exam will be a comprehensive assessment of your writing skills. We'll go over specific details closer to the exam date.";
+    
+    if (/response papers|response assignments/i.test(lowerQuestion)) {
+        return "Response Papers are a series of six short writing assignments providing sequenced practice in core methodologies of literary scholarship. These low-stakes exercises build foundational skills for major papers and informed class discussion. Your grade (15%) is based on engagement and completion.";
     }
-    if (/midterm/i.test(lowerQuestion)) {
-        return "We will have an in-class midterm exam. It will take place between December 16-December 23. We'll go over details in class as the exam approaches.";
+    
+    if (/research paper|final paper|final term paper|big paper|theoretical paper/i.test(lowerQuestion)) {
+        return "The Theoretical Paper (Final Paper) is a 2500-3000 word research paper that serves as the capstone project. You'll develop an original argument using a specific theoretical or critical lens, supported by engagement with at least six scholarly sources. It's worth 25% of your grade and cannot be revised after the deadline.";
     }
-    if (/how many.*essays|number of papers|total writing assignments/i.test(lowerQuestion)) {
-        return "You'll write four major essays this semester: an Identity Essay, an Analytical Argument, a Midterm Essay, and a final Research Paper.";
+    
+    if (/conference presentation|presentation/i.test(lowerQuestion)) {
+        return "The Conference Presentation is a 5-7 minute conference-style presentation based on your final research paper, followed by a brief Q&A. This assignment translates written scholarship into oral communication using a visual aid. It's worth 10% of your grade.";
     }
-    if (/how long.*essays|length.*papers|page requirements/i.test(lowerQuestion)) {
-        return "The Identity Essay runs 4-5 pages, the Analytical Argument is 5-6 pages, the Midterm Essay is 2-3 pages, and the Research Paper is 7-8 pages. You'll write the midterm in class by hand, but all other essays should be double-spaced with standard MLA formatting.";
+    
+    if (/quizzes|quiz/i.test(lowerQuestion)) {
+        return "Weekly quizzes encourage consistent engagement with course material and provide regular checkpoints for understanding. These open-note (but not open-computer) assessments are low-stakes and may be retaken to improve your score. They're worth 10% of your grade total and are given at the beginning of class using pen and paper.";
     }
-    if (/types of essays|kinds of papers|what.*write.*(argumentative|narrative)/i.test(lowerQuestion)) {
-        return "You'll write several types of essays: a personal narrative (Identity Essay), analytical arguments, and a research paper. Each type helps develop different writing skills you'll need in college and beyond.";
+    
+    if (/how many.*essays|writing assignments|assignments.*due|workload/i.test(lowerQuestion)) {
+        return "You'll complete: 1 Close Reading Paper (1250-1500 words), 6 Response Papers, 1 Annotated Bibliography, 1 Research Paper (2500-3000 words), weekly quizzes, and 1 Conference Presentation. See the syllabus for due dates and detailed requirements.";
     }
-    if (/research paper|final paper|big paper/i.test(lowerQuestion)) {
-        return "Yes, there's a significant 7-8 page research paper due in Week 14. It's worth 21% of your grade and requires using academic sources with proper MLA citations. We'll break the process into manageable steps throughout the semester.";
-    }
-    if (/choose.*topics|pick.*own|select.*subjects/i.test(lowerQuestion)) {
-        return "You'll have some flexibility with topics, especially for the research paper. The first two essays have guided prompts, while the research paper allows you to choose a topic within our course themes, subject to my approval. I'm happy to help brainstorm ideas during office hours.";
-    }
-    if (/submit.*essays|turn in.*papers|how.*upload/i.test(lowerQuestion)) {
-        return "All essays must be submitted as PDFs through Canvas by 11:59pm on their due dates. Please name your files like this: LastName_AssignmentTitle.pdf. Email submissions won't be accepted, so make sure you're comfortable with Canvas uploads.";
-    }
-    if (/revise.*essays|rewrite.*grade|improve.*score/i.test(lowerQuestion)) {
-        return "You can revise any of the first three essays within one week of receiving feedback. The maximum grade improvement is one letter grade. Just upload your revised version to Canvas with 'REVISED' in the filename. The research paper can't be revised after submission.";
-    }
-    if (/peer review|group editing|workshop.*papers/i.test(lowerQuestion)) {
-        return "Yes, we'll do structured peer review sessions for each major essay. You'll exchange drafts with classmates, provide written feedback using guided worksheets, and use those comments to improve your own paper.";
-    }
-
+    
     // GRADING
     if (/grading scale|how.*graded/i.test(lowerQuestion)) {
-        return "Grading scale:\nA: 90-100%\nB: 80-89%\nC: 70-79%\nD: 60-69%\nF: Below 60%\nRounded to nearest whole % at semester end";
+        return "Grading scale: A (90-100%), B (80-89%), C (70-79%), D (60-69%), F (Below 60%). Final grades are not rounded up.";
     }
-    if (/round.*|rounded.*/i.test(lowerQuestion)) {
-        return "At the end of the semester, your grade will be rounded to the nearest whole percent. For example, if you have an 89.5, this will be rounded to a 90%. If you have an 89.4, it will not be rounded up to an A.";
-    }
+    
     if (/grade breakdown|grading breakdown|how much is.*worth|what percent of my grade is.*|weight.*assignments|grade.*based.*on|how.*get.*a|how.*pass.*class|how.*pass/i.test(lowerQuestion)) {
-        return "Grade composition:\n- Participation (30%)\n  - Annotations (7.5%)\n  - Discussions (7.5%)\n  - Attendance (7.5%)\n  - In-class writing (7.5%)\n- Essays (60%)\n- Exams (10%)";
-    }
-    if (/fail.*assignment|0 on.*assignment|fail.*quiz|failed.*essay|failed.*quiz|failed.*assignment/i.test(lowerQuestion)) {
-        return "If you're not happy with the grade you earned on an essay or assignment, visit office hours or speak with your professor.";
+        return "Grade composition: Close Reading Paper (20%), Research Paper (25%), Response Papers (15%), Annotated Bibliography (10%), Quizzes (10%), Conference Presentation (10%), Attendance and Participation (10%).";
     }
     
     // POLICIES
     if (/late work|submit.*late|turn in.*late|hand in.*late|late.*turn.*in|late.*submit|late.*hand.*in/i.test(lowerQuestion)) {
-        return "If you turn it in less than one week late, you'll lose 10%. If it's more than a week late, you'll lose 10% each week. I don't accept work that is more than 2 weeks late. If you know you'll need more time on an assignment, reach out early for an extension.";
+        return "Late work penalties: <1 hour (5%), 1 class day (10%), 2 class days (20%), >1 week (max 50%). One 48-hour 'Life Happens' extension available per semester (not for final essay or exams). If having technical difficulties, email your paper to show it was done on time, then submit to Canvas when able.";
     }
-    if (/plagiarism|can i use AI|AI|academic integrity/i.test(lowerQuestion)) {
-        return "Work that you submit is assumed to be original. Using the ideas or words of another person (or program) as if it were your own is plagiarism. Plagiarism or cheating, including the uncited use of AI, will result in a failing grade on the assignment.";
-    }
-
-    // RESOURCES
-    if (/tutoring|help with writing|help.*writing|help.*assignment|help.*essay|help.*research/i.test(lowerQuestion)) {
-        return "Writing support available in the writing center. See the 'Resources' section of the syllabus for locations/hours";
-    }
-    if (/where.*writing center|where.*tutoring/i.test(lowerQuestion)) {
-        return "Visit the writing center here: https://www.smc.edu/student-support/academic-support/tutoring-centers/writing-humanities/";
-    }
-    if (/overwhelmed|falling behind|can't cope/i.test(lowerQuestion)) {
-        return "If you're struggling to keep up, send me an email or come see me during office hours. I'll help you make a game plan and get you connected with resources. If you need immediate mental or emotional health support, call 800-691-6003. If it's an emergency, call SMC dispatch at 310-434-4300 or (if you're off campus) call 911";
-    }
-
-    // DEFAULT RESPONSE
-    const commonQuestions = [
-        "When are office hours?",
-        "How do I request an extension?",
-        "What's the research paper requirement?",
-        "How many absences are allowed?",
-        "What's the grading breakdown?"
-    ];
-    return `I'm not sure I understand. Try checking the syllabus, rephrasing your question, or asking a classmate.`;
-}
-
-// Toggle chatbot visibility and show initial greeting
-chatbotToggle.addEventListener('click', () => {
-    chatbotWidget.classList.toggle('active');
     
-    // Only add greeting if this is the first open
-    if (chatbotWidget.classList.contains('active') && chatbotMessages.children.length === 0) {
-        addMessage(
-            "Hello! I can answer questions about the ENGL 1+28 syllabus. Try asking about grading, attendance, or course policies.",
-            false,
-            true
-        );
+    if (/plagiarism|can i use AI|AI|academic integrity|cheating|turnitin/i.test(lowerQuestion)) {
+        return "Plagiarism, self-plagiarism, or unauthorized AI use results in a zero and possible course failure. Limited AI use for minor tasks is acceptable but must be cited. Using GenAI tools to generate content is not allowed. All submissions are checked through Turnitin, and you must submit version history for non-handwritten assignments. Any assignment flagged for AI content will automatically receive a zero.";
     }
-});
-
-// Close chatbot
-chatbotClose.addEventListener('click', () => {
-    chatbotWidget.classList.remove('active');
-});
-
-// Send message on button click or Enter key
-chatbotSend.addEventListener('click', sendMessage);
-chatbotInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        sendMessage();
+    
+    if (/communication policy|email|contact|office hours|how.*reach.*professor/i.test(lowerQuestion)) {
+        return "I respond to emails within 24 hours Monday-Friday (9-5). Weekend responses aren't guaranteed. Office hours: MW 10-11am in MHB510. Make sure to enable Canvas notifications. If you don't hear back within 24 hours on weekdays, please follow up!";
     }
-});
+    
+    if (/technology policy|laptops|devices|phones|electronics in class/i.test(lowerQuestion)) {
+        return "You may use laptops/electronic devices for taking notes and reading course materials. Please avoid non-course related browsing as it distracts you and others. Phones should be silenced. I may ask you to leave if you're scrolling or talking over others, which counts as an absence.";
+    }
+    
+    if (/withdrawal policy|drop.*class|withdraw/i.test(lowerQuestion)) {
+        return "Withdrawals during the final three weeks require a serious, compelling reason beyond your control. You must officially file withdrawal paperwork with Enrollment Services regardless of attendance, otherwise you'll receive a 'WU' (unauthorized withdrawal) grade.";
+    }
+    
+    // RESOURCES
+    if (/bmac|disability|accommodation|accessibility/i.test(lowerQuestion)) {
+        return "Students with disabilities must register with the Bob Murphy Access Center (BMAC) each semester and provide faculty with verification of accommodations as early as possible. BMAC is in the Shakarian Student Success Center, Room 110. Phone: (562) 985-5401, Email: bmac@csulb.edu.";
+    }
+    
+    if (/resources|support|help|tutoring|writing center|library/i.test(lowerQuestion)) {
+        return "Campus resources include: Bob Murphy Access Center, Student Affairs, Health Services, Counseling, University Library, Writing Center, Technology Help Desk, and open computer labs (Horn Center and Spidell Technology Center). Printing costs 10 cents per page using your Beach ID card.";
+    }
+    
+    if (/computer.*lab|printing|software|technical support/i.test(lowerQuestion)) {
+        return "Open computer labs: Horn Center (lower campus) and Spidell Technology Center (Library). Printing: 10 cents/page using Beach ID card. Technical support: Technology Help Desk at (562) 985-4959, helpdesk@csulb.edu, or visit Horn Center/Library 5th Floor.";
+    }
+    
+    // DEFAULT RESPONSE
+    return "I'm not sure I understand. Try checking the syllabus, rephrasing your question, or asking your instructor during office hours (MW 10-11am in MHB510). You might ask about assignments, policies, grading, or resources.";
+}
+    
+    // Toggle chatbot visibility and show initial greeting
+    chatbotToggle.addEventListener('click', () => {
+        chatbotWidget.classList.toggle('active');
+        
+        // Only add greeting if this is the first open
+        if (chatbotWidget.classList.contains('active') && chatbotMessages.children.length === 0) {
+            addMessage(
+                "Hark, scholars! The ENGL 380 syllabus lies open before thee. Ask of grading, attendance, or the ordinances of the course, and I shall make all plain.",
+                false,
+                true
+            );
+        }
+    });
+    
+    // Close chatbot
+    chatbotClose.addEventListener('click', () => {
+        chatbotWidget.classList.remove('active');
+    });
+    
+    // Send message on button click or Enter key
+    chatbotSend.addEventListener('click', sendMessage);
+    chatbotInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+}
